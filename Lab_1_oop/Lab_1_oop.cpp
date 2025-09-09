@@ -16,7 +16,7 @@ public:
 	int getSize() { return size; };
 
 	void setSize(int size);
-	void setName(string name) { this->name = name; };
+	void setName(string name);
 
 	int& operator[] (int index);
 
@@ -140,6 +140,11 @@ void DynamicArray::setSize(int size)
 			}
 		}
 	}
+}
+
+void DynamicArray::setName(string name)
+{ 
+	this->name = name;
 }
 
 int& DynamicArray::operator[](int index)
