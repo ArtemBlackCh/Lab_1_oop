@@ -8,38 +8,12 @@ private:
 	
 	string name;
 	int size;
-	int* arrey;
+	int* array;
+
+	static int count;
 
 public:
 
-	string getName() { return name; };
-	int getSize() { return size; };
-
-	void setSize(int size);
-	void setName(string name);
-
-	int& operator[] (int index);
-
-	const int& operator[] (int index) const;
-
-	DynamicArray& operator= (const DynamicArray& copyArrey);
-
-	friend DynamicArray operator* (const DynamicArray& firstArrey, const DynamicArray& secondArrey);
-
-	friend bool operator>(const DynamicArray& firstArrey, const DynamicArray& secondArrey);
-
-	friend bool operator>(const int& num, const DynamicArray& secondArrey);
-
-	friend bool operator>(const DynamicArray& firstArrey, const int& num);
-
-	friend ostream& operator<< (ostream& out, const DynamicArray outArrey);
-
-	friend istream& operator>> (istream& out, DynamicArray& inputArrey);
-
-	DynamicArray& operator--();
-
-	DynamicArray operator--(int i);
-	
 	DynamicArray();
 
 	explicit DynamicArray(int size);
@@ -52,43 +26,71 @@ public:
 
 	~DynamicArray();
 
+	string getName() { return name; };
+	int getSize() { return size; };
+
+	void setSize(int size);
+	void setName(string name);
+
+	static int get_count() { return count; };
+
+	int& operator[] (int index);
+
+	const int& operator[] (int index) const;
+
+	DynamicArray& operator= (const DynamicArray& copyArray);
+
+	friend DynamicArray operator* (const DynamicArray& firstArray, const DynamicArray& secondArray);
+
+	friend bool operator>(const DynamicArray& firstArray, const DynamicArray& secondArray);
+	friend bool operator>(const int& num, const DynamicArray& secondArray);
+	friend bool operator>(const DynamicArray& firstArray, const int& num);
+
+	friend ostream& operator<< (ostream& out, const DynamicArray outArray);
+	friend istream& operator>> (istream& out, DynamicArray& inputArray);
+
+	DynamicArray& operator--();
+	DynamicArray operator--(int i);
+	
 	DynamicArray next();
 };
 
-ostream& operator<< (ostream& out, DynamicArray outArrey)
-{
-	out << "name: " << outArrey.name << " size: " << outArrey.size << " arrey: ";
+int DynamicArray::count = 0;
 
-	for (int i = 0; i < outArrey.size; i++)
+ostream& operator<< (ostream& out, DynamicArray outArray)
+{
+	out << "name: " << outArray.name << " size: " << outArray.size << " array: ";
+
+	for (int i = 0; i < outArray.size; i++)
 	{
-		cout << outArrey[i] << ' ';
+		cout << outArray[i] << ' ';
 	}
 
 	return out;
 }
 
-istream& operator>> (istream& in, DynamicArray& inArrey)
+istream& operator>> (istream& in, DynamicArray& inArray)
 {
-	in >> inArrey.name;
-	in >> inArrey.size;
+	in >> inArray.name;
+	in >> inArray.size;
 
-	if (inArrey.arrey)
+	if (inArray.array)
 	{
-		delete[] inArrey.arrey;
+		delete[] inArray.array;
 	}
 
-	if (inArrey.size < 0)
+	if (inArray.size < 0)
 	{
-		inArrey.size = 0;
+		inArray.size = 0;
 	}
 
-	inArrey.arrey = new int[inArrey.size];
+	inArray.array = new int[inArray.size];
 
-	if (inArrey.size > 0)
+	if (inArray.size > 0)
 	{
-		for (int i = 0; i < inArrey.size; i++)
+		for (int i = 0; i < inArray.size; i++)
 		{
-			in >> inArrey.arrey[i];
+			in >> inArray.array[i];
 		}
 	}
 
@@ -99,46 +101,46 @@ void DynamicArray::setSize(int size)
 {
 	if (this->size != size)
 	{ 
-		if (arrey)
+		if (array)
 		{
-			int* newArrey = new int[size];
+			int* newArray = new int[size];
 
 			if (size == 0)
 			{
-				newArrey = nullptr;
+				newArray = nullptr;
 			}
 			else if (this->size > size)
 			{
 				for (int i = 0; i < size; i++)
 				{
-					newArrey[i] = arrey[i];
+					newArray[i] = array[i];
 				}
 			}
 			else
 			{
 				for (int i = 0; i < this->size; i++)
 				{
-					newArrey[i] = arrey[i];
+					newArray[i] = array[i];
 				}
 
 				for (int i = this->size; i < size; i++)
 				{
-					newArrey[i] = 0;
+					newArray[i] = 0;
 				}
 			}
 
 			this->size = size;
-			delete[] arrey;
-			this->arrey = newArrey;
+			delete[] array;
+			this->array = newArray;
 		}
 		else
 		{
 			this->size = size;
-			arrey = new int[size];
+			array = new int[size];
 		
 			for (int i = 0; i < size; i++)
 			{
-				arrey[i] = 0;
+				array[i] = 0;
 			}
 		}
 	}
@@ -153,11 +155,11 @@ int& DynamicArray::operator[](int index)
 {
 	if (index < size && index >= 0)
 	{
-		return arrey[index];
+		return array[index];
 	}
 	else
 	{
-		return arrey[0];
+		return array[0];
 	}
 }
 
@@ -165,59 +167,61 @@ const int& DynamicArray::operator[](int index) const
 {
 	if (index < size && index >= 0)
 	{
-		return arrey[index];
+		return array[index];
 	}
 	else
 	{
-		return arrey[0];
+		return array[0];
 	}
 }
 
-DynamicArray& DynamicArray::operator=(const DynamicArray& copyArrey)
+DynamicArray& DynamicArray::operator=(const DynamicArray& copyArray)
 {
-	name = copyArrey.name;
-	size = copyArrey.size;
+	//name = "copyArray " + other.name;
+	name = copyArray.name;
 
-	if (arrey)
+	size = copyArray.size;
+
+	if (array)
 	{
-		delete[] arrey;
+		delete[] array;
 	}
 
 	if (size == 0)
 	{
-		arrey = nullptr;
+		array = nullptr;
 	}
 	else
 	{
-		arrey = new int[size];
+		array = new int[size];
 
 		for (int i = 0; i < size; i++)
 		{
-			arrey[i] = copyArrey[i];
+			array[i] = copyArray[i];
 		}
 	}
 
 	return *this;
 }
 
-DynamicArray operator*(const DynamicArray& firstArrey, const DynamicArray& secondArrey)
+DynamicArray operator*(const DynamicArray& firstArray, const DynamicArray& secondArray)
 {
-	if (firstArrey.size != 0 && secondArrey.size != 0)
+	if (firstArray.size != 0 && secondArray.size != 0)
 	{ 
-		DynamicArray result("nameless", firstArrey.size);
+		DynamicArray result("nameless", firstArray.size);
 
 		int element;
 		int index = 0;
 		bool flag;
 	
-		for (int i = 0; i < firstArrey.size; i++)
+		for (int i = 0; i < firstArray.size; i++)
 		{
-			element = firstArrey.arrey[i];
+			element = firstArray.array[i];
 			flag = true;
 
-			for (int j = 0; j < secondArrey.size && flag; j++)
+			for (int j = 0; j < secondArray.size && flag; j++)
 			{
-				if (element == secondArrey[j])
+				if (element == secondArray[j])
 				{
 					result[index] = element;
 					index++;
@@ -240,17 +244,17 @@ DynamicArray operator*(const DynamicArray& firstArrey, const DynamicArray& secon
 	}
 }
 
-bool operator>(const DynamicArray& firstArrey, const DynamicArray& secondArrey)
+bool operator>(const DynamicArray& firstArray, const DynamicArray& secondArray)
 {
 	bool result;
 
-	if (firstArrey.size == secondArrey.size && firstArrey.size != 0)
+	if (firstArray.size == secondArray.size && firstArray.size != 0)
 	{
 		result = true;
 		
-		for (int i = 0; i < firstArrey.size && result; i++)
+		for (int i = 0; i < firstArray.size && result; i++)
 		{
-			if (firstArrey[i] < secondArrey[i])
+			if (firstArray[i] < secondArray[i])
 			{
 				result = false;
 			}
@@ -264,13 +268,13 @@ bool operator>(const DynamicArray& firstArrey, const DynamicArray& secondArrey)
 	return result;
 }
 
-bool operator>(const int& num, const DynamicArray& secondArrey)
+bool operator>(const int& num, const DynamicArray& secondArray)
 {
 	bool result = true;
 
-	for (int i = 0; i < secondArrey.size && result; i++)
+	for (int i = 0; i < secondArray.size && result; i++)
 	{
-		if (num < secondArrey[i])
+		if (num < secondArray[i])
 		{
 			result = false;
 		}
@@ -279,13 +283,13 @@ bool operator>(const int& num, const DynamicArray& secondArrey)
 	return result;
 }
 
-bool operator>(const DynamicArray& firstArrey, const int& num)
+bool operator>(const DynamicArray& firstArray, const int& num)
 {
 	bool result = true;
 
-	for (int i = 0; i < firstArrey.size && result; i++)
+	for (int i = 0; i < firstArray.size && result; i++)
 	{
-		if (firstArrey[i] < num)
+		if (firstArray[i] < num)
 		{
 			result = false;
 		}
@@ -296,11 +300,11 @@ bool operator>(const DynamicArray& firstArrey, const int& num)
 
 DynamicArray& DynamicArray::operator--()
 {
-	if (this->arrey)
+	if (this->array)
 	{
 		for (int i = 0; i < this->size; i++)
 		{
-			this->arrey[i]--;
+			this->array[i]--;
 		}
 	}
 
@@ -320,6 +324,7 @@ DynamicArray::DynamicArray()
 {
 	this->size = 0;
 	this->name = "nameless";
+	count++;
 
 	cout << "a constructor with no parameters was used" << endl;
 }
@@ -327,20 +332,21 @@ DynamicArray::DynamicArray()
 DynamicArray::DynamicArray(int size)
 {
 	this->name = "nameless";
+	count++;
 	
 	if (size > 0)
 	{
-		this->arrey = new int[size];
+		this->array = new int[size];
 		this->size = size;
 
 		for (int i = 0; i < size; i++)
 		{
-			arrey[i] = 0;
+			array[i] = 0;
 		}
 	}
 	else
 	{
-		this->arrey = nullptr;
+		this->array = nullptr;
 		this->size = 0;
 	}
 
@@ -350,20 +356,21 @@ DynamicArray::DynamicArray(int size)
 DynamicArray::DynamicArray(string name, int size)
 {
 	this->name = name;
+	count++;
 
 	if (size > 0)
 	{
-		this->arrey = new int[size];
+		this->array = new int[size];
 		this->size = size;
 
 		for (int i = 0; i < size; i++)
 		{
-			arrey[i] = 0;
+			array[i] = 0;
 		}
 	}
 	else
 	{
-		this->arrey = nullptr;
+		this->array = nullptr;
 		this->size = 0;
 	}
 
@@ -372,20 +379,23 @@ DynamicArray::DynamicArray(string name, int size)
 
 DynamicArray::DynamicArray(DynamicArray& other)
 {
+	//name = "copy " + other.name;
 	name = other.name;
+
 	size = other.size;
+	count++;
 
 	if (size == 0)
 	{
-		arrey = nullptr;
+		array = nullptr;
 	}
 	else
 	{
-		arrey = new int[size];
+		array = new int[size];
 
 		for (int i = 0; i < size; i++)
 		{
-			arrey[i] = other[i];
+			array[i] = other[i];
 		}
 	}
 
@@ -394,20 +404,23 @@ DynamicArray::DynamicArray(DynamicArray& other)
 
 DynamicArray::DynamicArray(const DynamicArray& other)
 {
+	//name = "copy " + other.name;
 	name = other.name;
+
 	size = other.size;
+	count++;
 
 	if (size == 0)
 	{
-		arrey = nullptr;
+		array = nullptr;
 	}
 	else
 	{
-		arrey = new int[size];
+		array = new int[size];
 
 		for (int i = 0; i < size; i++)
 		{
-			arrey[i] = other[i];
+			array[i] = other[i];
 		}
 	}
 
@@ -416,12 +429,13 @@ DynamicArray::DynamicArray(const DynamicArray& other)
 
 DynamicArray::~DynamicArray()
 {
-	if (arrey)
-	{
-		delete[] arrey;
-	}
+	cout << "a destructor was used on " << this->name << endl;
+	count--;
 
-	cout << "a destructor was used on " << endl;
+	if (array)
+	{
+		delete[] array;
+	}
 }
 
 DynamicArray DynamicArray::next()
@@ -430,7 +444,7 @@ DynamicArray DynamicArray::next()
 	{
 		for (int i = 0; i < this->size; i++)
 		{
-			this->arrey[i]++;
+			this->array[i]++;
 		}
 	}
 	
@@ -439,34 +453,46 @@ DynamicArray DynamicArray::next()
 
 void F(void)
 {
-	DynamicArray A, B;
+	cout << "count: " << DynamicArray::get_count() << endl;
 
-	cout << " enter array A (name size and elements)\n";
-	cin >> A;
+	DynamicArray A("A", 4), B("B", 5);
 
-	cout << " enter array B (name size and elements)\n";
-	cin >> A;
+	cout << " Enter array A size: " << A.getSize() << endl;
+	for (int i = 0; i < A.getSize(); i++)
+	{
+		cin >> A[i];
+	}
+
+	cout << " Enter array B size: " << B.getSize() << endl;
+	for (int i = 0; i < B.getSize(); i++)
+	{
+		cin >> B[i];
+	}
+
+	cout << "count: " << DynamicArray::get_count() << endl;
 
 	DynamicArray C = A;
+	C.setName("C");
+
+	cout << "count: " << DynamicArray::get_count() << endl;
+
 	DynamicArray D;
 
+	cout << "count: " << DynamicArray::get_count() << endl;
+
 	D = A * B;
+	D.setName("D");
 
 	cout << A << endl << B << endl << C << endl << D;
 }
 
 int main()
 {
+	F();
+	cout << "count: " << DynamicArray::get_count() << endl;
+
 	DynamicArray A("A", 5);
-
-	cout << A << endl;
-	
 	A.next();
-
-	cout << A << endl;
-
-	cout << A-- << endl;
-
-	cout << A << endl;
+	cout << A;
 }
 
