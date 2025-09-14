@@ -36,9 +36,9 @@ public:
 
 	friend istream& operator>> (istream& out, DynamicArray& inputArrey);
 
-	DynamicArray& operator++();
+	DynamicArray& operator--();
 
-	const DynamicArray& operator++(int i);
+	DynamicArray operator--(int i);
 	
 	DynamicArray();
 
@@ -48,12 +48,14 @@ public:
 
 	DynamicArray(DynamicArray& other);
 
+	DynamicArray(const DynamicArray& other);
+
 	~DynamicArray();
 
 	DynamicArray next();
 };
 
-ostream& operator<< (ostream& out, const DynamicArray outArrey)
+ostream& operator<< (ostream& out, DynamicArray outArrey)
 {
 	out << "name: " << outArrey.name << " size: " << outArrey.size << " arrey: ";
 
@@ -292,6 +294,28 @@ bool operator>(const DynamicArray& firstArrey, const int& num)
 	return result;
 }
 
+DynamicArray& DynamicArray::operator--()
+{
+	if (this->arrey)
+	{
+		for (int i = 0; i < this->size; i++)
+		{
+			this->arrey[i]--;
+		}
+	}
+
+	return *this;
+}
+
+DynamicArray DynamicArray::operator--(int i)
+{
+	DynamicArray temp = *this;
+
+	--*this;
+
+	return temp;
+}
+
 DynamicArray::DynamicArray()
 {
 	this->size = 0;
@@ -368,6 +392,28 @@ DynamicArray::DynamicArray(DynamicArray& other)
 	cout << "a copy constructor was used" << endl;
 }
 
+DynamicArray::DynamicArray(const DynamicArray& other)
+{
+	name = other.name;
+	size = other.size;
+
+	if (size == 0)
+	{
+		arrey = nullptr;
+	}
+	else
+	{
+		arrey = new int[size];
+
+		for (int i = 0; i < size; i++)
+		{
+			arrey[i] = other[i];
+		}
+	}
+
+	cout << "a copy constructor was used" << endl;
+}
+
 DynamicArray::~DynamicArray()
 {
 	if (arrey)
@@ -415,7 +461,11 @@ int main()
 
 	cout << A << endl;
 	
-	A.next().next();
+	A.next();
+
+	cout << A << endl;
+
+	cout << A-- << endl;
 
 	cout << A << endl;
 }
