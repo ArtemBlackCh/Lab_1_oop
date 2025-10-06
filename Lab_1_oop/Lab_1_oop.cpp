@@ -20,8 +20,6 @@ public:
 
 	DynamicArray(string name, int size);
 
-	DynamicArray(DynamicArray& other);
-
 	DynamicArray(const DynamicArray& other);
 
 	~DynamicArray();
@@ -35,18 +33,19 @@ public:
 	static int get_count() { return count; };
 
 	int& operator[] (int index);
-
 	const int& operator[] (int index) const;
 
 	DynamicArray& operator= (const DynamicArray& copyArray);
 
-	friend DynamicArray operator* (const DynamicArray& firstArray, const DynamicArray& secondArray);
+	friend DynamicArray operator* ( DynamicArray& firstArray, DynamicArray& secondArray);
+	friend DynamicArray operator* (DynamicArray& firstArray, const int& num);
+	friend DynamicArray operator* (const int& num, DynamicArray& secondArray);
 
 	friend bool operator>(const DynamicArray& firstArray, const DynamicArray& secondArray);
 	friend bool operator>(const int& num, const DynamicArray& secondArray);
 	friend bool operator>(const DynamicArray& firstArray, const int& num);
 
-	friend ostream& operator<< (ostream& out, const DynamicArray outArray);
+	friend ostream& operator<< (ostream& out, const DynamicArray& outArray);
 	friend istream& operator>> (istream& out, DynamicArray& inputArray);
 
 	DynamicArray& operator--();
@@ -57,7 +56,7 @@ public:
 
 int DynamicArray::count = 0;
 
-ostream& operator<< (ostream& out, DynamicArray outArray)
+ostream& operator<< (ostream& out, const DynamicArray& outArray)
 {
 	out << "name: " << outArray.name << " size: " << outArray.size << " array: ";
 
@@ -204,13 +203,14 @@ DynamicArray& DynamicArray::operator=(const DynamicArray& copyArray)
 	return *this;
 }
 
-DynamicArray operator*(const DynamicArray& firstArray, const DynamicArray& secondArray)
+DynamicArray operator*(DynamicArray& firstArray,DynamicArray& secondArray)
 {
 	if (firstArray.size != 0 && secondArray.size != 0)
 	{ 
 		DynamicArray result("nameless", firstArray.size);
 
 		int element;
+		int countF, countS;
 		int index = 0;
 		bool flag;
 	
@@ -218,21 +218,38 @@ DynamicArray operator*(const DynamicArray& firstArray, const DynamicArray& secon
 		{
 			element = firstArray.array[i];
 			flag = true;
+			countF = 0;
+			countS = 0;
 
-			for (int j = 0; j < secondArray.size && flag; j++)
+			for (int k = 0; k < firstArray.size && flag; k++)
+			{
+				if (countF == 1 && i >= k)
+				{
+					flag = false;
+				}
+
+				if (element == firstArray[k])
+				{
+					countF++;
+				}
+			}
+
+			for (int j = 0; j < secondArray.size && flag && countF > countS; j++)
 			{
 				if (element == secondArray[j])
 				{
-					result[index] = element;
-					index++;
-					flag = false;
+					countS++;
 				}
+			}
+
+			for (int j = 0; j < countS && flag; j++)
+			{
+				result[index] = element;
+				index++;
 			}
 		}
 
-		int resultSize = index;
-
-		result.setSize(resultSize);
+		result.setSize(index);
 
 		return result;
 	}
@@ -242,6 +259,22 @@ DynamicArray operator*(const DynamicArray& firstArray, const DynamicArray& secon
 
 		return result;
 	}
+}
+
+DynamicArray operator* (DynamicArray& firstArray,int num)
+{
+	DynamicArray FromNum("FromNum", 1);
+	FromNum[0] = num;
+
+	return firstArray * FromNum;
+}
+
+DynamicArray operator* ( int num,  DynamicArray& secondArray)
+{
+	DynamicArray FromNum("FromNum", 1);
+	FromNum[0] = num;
+
+	return FromNum * secondArray;
 }
 
 bool operator>(const DynamicArray& firstArray, const DynamicArray& secondArray)
@@ -331,7 +364,7 @@ DynamicArray::DynamicArray()
 
 DynamicArray::DynamicArray(int size)
 {
-	this->name = "nameless";
+	this->name = "explicit nameless";
 	count++;
 	
 	if (size > 0)
@@ -375,31 +408,6 @@ DynamicArray::DynamicArray(string name, int size)
 	}
 
 	cout << "a constructor with parameters was used" << endl;
-}
-
-DynamicArray::DynamicArray(DynamicArray& other)
-{
-	//name = "copy " + other.name;
-	name = other.name;
-
-	size = other.size;
-	count++;
-
-	if (size == 0)
-	{
-		array = nullptr;
-	}
-	else
-	{
-		array = new int[size];
-
-		for (int i = 0; i < size; i++)
-		{
-			array[i] = other[i];
-		}
-	}
-
-	cout << "a copy constructor was used" << endl;
 }
 
 DynamicArray::DynamicArray(const DynamicArray& other)
@@ -491,8 +499,8 @@ int main()
 	F();
 	cout << "count: " << DynamicArray::get_count() << endl;
 
-	DynamicArray A("A", 5);
+	/*DynamicArray A("A", 5);
 	A.next();
-	cout << A;
+	cout << A;*/
 }
 
