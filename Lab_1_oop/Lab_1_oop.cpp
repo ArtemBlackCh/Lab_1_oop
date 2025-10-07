@@ -38,8 +38,9 @@ public:
 	DynamicArray& operator= (const DynamicArray& copyArray);
 
 	friend DynamicArray operator* ( DynamicArray& firstArray, DynamicArray& secondArray);
-	friend DynamicArray operator* (DynamicArray& firstArray, const int& num);
-	friend DynamicArray operator* (const int& num, DynamicArray& secondArray);
+
+	friend DynamicArray operator* (DynamicArray& firstArray, int num);
+	friend DynamicArray operator* (int num, DynamicArray& secondArray);
 
 	friend bool operator>(const DynamicArray& firstArray, const DynamicArray& secondArray);
 	friend bool operator>(const int& num, const DynamicArray& secondArray);
@@ -152,6 +153,8 @@ void DynamicArray::setName(string name)
 
 int& DynamicArray::operator[](int index)
 {
+	//cout << "operator []" << endl;
+
 	if (index < size && index >= 0)
 	{
 		return array[index];
@@ -160,10 +163,13 @@ int& DynamicArray::operator[](int index)
 	{
 		return array[0];
 	}
+
 }
 
 const int& DynamicArray::operator[](int index) const
 {
+	//cout << "operator [] const" << endl;
+
 	if (index < size && index >= 0)
 	{
 		return array[index];
@@ -172,6 +178,7 @@ const int& DynamicArray::operator[](int index) const
 	{
 		return array[0];
 	}
+
 }
 
 DynamicArray& DynamicArray::operator=(const DynamicArray& copyArray)
@@ -463,7 +470,7 @@ void F(void)
 {
 	cout << "count: " << DynamicArray::get_count() << endl;
 
-	DynamicArray A("A", 4), B("B", 5);
+	DynamicArray A("A", 5), B("B", 7);
 
 	cout << " Enter array A size: " << A.getSize() << endl;
 	for (int i = 0; i < A.getSize(); i++)
@@ -499,8 +506,27 @@ int main()
 	F();
 	cout << "count: " << DynamicArray::get_count() << endl;
 
-	/*DynamicArray A("A", 5);
+	DynamicArray A("A", 5);
 	A.next();
-	cout << A;*/
+	cout << A;
+
+	/*DynamicArray A("A", 5), D;
+
+	cout << " Enter array A size: " << A.getSize() << endl;
+	for (int i = 0; i < A.getSize(); i++)
+	{
+		cin >> A[i];
+	}
+
+	int B;
+
+	cout << " Enter array B :" << endl;
+	cin >> B;
+
+	D = A * B;
+	D.setName("D");
+
+	cout << A << endl << D << endl;*/
+
 }
 
